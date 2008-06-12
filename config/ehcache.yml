@@ -1,0 +1,13 @@
+# cache managers
+defaults:
+  store: disk
+  max_elements:  10000
+  time_to_live:  120
+  time_to_idle:  120
+  disk_overflow: true
+  clients:
+    - 127.0.0.1:40001
+
+sample_cache:
+  servers:
+    - 127.0.0.1:40000
