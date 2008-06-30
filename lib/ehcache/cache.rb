@@ -1,5 +1,7 @@
 module Ehcache
   class Cache
+    PRIMARY = "primary"
+
     # pull cache from given manager by name
     def initialize(manager, cache_name)
       @cache = manager.get_cache(cache_name)
@@ -37,6 +39,22 @@ module Ehcache
     # number of elements in the cache store
     def disk_size
       @cache.get_disk_store_size
+    end
+
+    def max_elements
+      @cache.get_max_elements_in_memory
+    end
+
+    def eternal?
+      @cache.is_eternal
+    end
+    
+    def ttl
+      @cache.get_time_to_live_seconds
+    end
+
+    def tti
+      @cache.get_time_to_idle_seconds
     end
   end
 end

@@ -7,13 +7,8 @@ Rakefile
 config/ehcache.yml
 config/hoe.rb
 config/requirements.rb
-ext/ehcache-1.4.1/LICENSE.txt
-ext/ehcache-1.4.1/RELEASE_NOTES.txt
-ext/ehcache-1.4.1/ehcache-1.4.1-javadoc.zip
 ext/ehcache-1.4.1/ehcache-1.4.1-remote-debugger.jar
-ext/ehcache-1.4.1/ehcache-1.4.1-sources.jar
 ext/ehcache-1.4.1/ehcache-1.4.1.jar
-ext/ehcache-1.4.1/ehcache.xsd
 ext/ehcache-1.4.1/lib/backport-util-concurrent-3.0.jar
 ext/ehcache-1.4.1/lib/commons-logging-1.0.4.jar
 ext/ehcache-1.4.1/lib/jsr107cache-1.0.jar
@@ -22,6 +17,7 @@ lib/ehcache/cache.rb
 lib/ehcache/cache_manager.rb
 lib/ehcache/config.rb
 lib/ehcache/element.rb
+lib/ehcache/extensions.rb
 lib/ehcache/java.rb
 lib/ehcache/version.rb
 script/console

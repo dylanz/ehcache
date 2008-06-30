@@ -1,13 +1,22 @@
-# cache managers
-defaults:
-  store: disk
-  max_elements:  10000
-  time_to_live:  120
-  time_to_idle:  120
-  disk_overflow: true
-  clients:
-    - 127.0.0.1:40001
+disk:
+  path: java.io.tmpdir
 
-sample_cache:
-  servers:
-    - 127.0.0.1:40000
+peer_provider:
+  class: net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory
+  properties: peerDiscovery=automatic,multicastGroupAddress=230.0.0.1,multicastGroupPort=4446,timeToLive=1
+  property_separator: "\,"
+
+peer_listener:
+  class: net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory
+
+default:
+  name: cache
+  max_elements_in_memory:  10000
+  time_to_live_seconds:  120
+  time_to_idle_seconds:  120
+  overflow_to_disk: true
+  eternal: false
+  disk_spool_buffer_size_mb: 30
+  disk_persistent: false
+  disk_expiry_thread_interval_seconds: 120
+  memory_store_eviction_policy: LRU

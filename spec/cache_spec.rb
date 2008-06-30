@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), %w[spec_helper])
 describe Cache do
   before(:each) do
     @manager = Ehcache::CacheManager.new
-    @cache   = @manager.cache("cache")
+    @cache   = @manager.cache
   end
 
   after(:each) do

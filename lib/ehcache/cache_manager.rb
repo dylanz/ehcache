@@ -2,19 +2,18 @@
 module Ehcache
   class CacheManager
     def initialize(options={})
+      # TODO document this
       unless options[:security]
         import java.lang.System unless defined?(System)
         import java.rmi.RMISecurityManager unless defined?(RMISecurityManager)
-        if System.getSecurityManager == nil
-          RMISecurityManager.new.inspect
-        end
+        RMISecurityManager.new if System.getSecurityManager == nil
       end
-      @manager = Ehcache::Java::CacheManager.new(Ehcache::Config.default)
+      @manager = Ehcache::Java::CacheManager.new(Ehcache::Config.generate(options))
     end
 
     # return cache by name
-    def cache(cache_name)
-      Ehcache::Cache.new(@manager, cache_name)
+    def cache(cache_name=nil)
+      Ehcache::Cache.new(@manager, cache_name || Ehcache::Cache::PRIMARY)
     end
 
     # return all cache names
