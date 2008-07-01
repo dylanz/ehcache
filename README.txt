@@ -23,6 +23,13 @@ cache.get("key")
 
 manager.shutdown
 
+
+TODO:  Rails support
+Run the ehcache_rails command from your projects root.  This will
+install the needed ehcache_rails plugin, which adds the required
+EhcacheStore cache store, and other rails'isms.
+
+
 == REQUIREMENTS:
 
 * FIX (list of requirements)

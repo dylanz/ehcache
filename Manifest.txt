@@ -4,6 +4,7 @@ Manifest.txt
 PostInstall.txt
 README.txt
 Rakefile
+bin/ehcache_rails
 config/ehcache.yml
 config/hoe.rb
 config/requirements.rb
@@ -20,6 +21,8 @@ lib/ehcache/element.rb
 lib/ehcache/extensions.rb
 lib/ehcache/java.rb
 lib/ehcache/version.rb
+lib/ehcache_rails/init.rb
+lib/ehcache_rails/lib/ehcache_rails/ehcache_store.rb
 script/console
 script/destroy
 script/generate
