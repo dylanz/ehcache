@@ -1,4 +1,3 @@
-# TODO statuses
 module Ehcache
   class CacheManager
     def initialize(options={})

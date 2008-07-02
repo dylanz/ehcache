@@ -4,7 +4,7 @@ Manifest.txt
 PostInstall.txt
 README.txt
 Rakefile
-bin/ehcache_rails
+bin/ehcache
 config/ehcache.yml
 config/hoe.rb
 config/requirements.rb
@@ -13,6 +13,7 @@ ext/ehcache-1.4.1/ehcache-1.4.1.jar
 ext/ehcache-1.4.1/lib/backport-util-concurrent-3.0.jar
 ext/ehcache-1.4.1/lib/commons-logging-1.0.4.jar
 ext/ehcache-1.4.1/lib/jsr107cache-1.0.jar
+ext/rails/ehcache_store.rb
 lib/ehcache.rb
 lib/ehcache/cache.rb
 lib/ehcache/cache_manager.rb
@@ -20,9 +21,8 @@ lib/ehcache/config.rb
 lib/ehcache/element.rb
 lib/ehcache/extensions.rb
 lib/ehcache/java.rb
+lib/ehcache/status.rb
 lib/ehcache/version.rb
-lib/ehcache_rails/init.rb
-lib/ehcache_rails/lib/ehcache_rails/ehcache_store.rb
 script/console
 script/destroy
 script/generate
