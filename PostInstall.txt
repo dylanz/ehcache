@@ -1,7 +1,2 @@
-
-For more information on ehcache, see http://ehcache.rubyforge.org
-
-NOTE: Change this information in PostInstall.txt 
-You can also delete it if you don't want it.
-
-
+For more information on this gem, and Ehcache proper, see:
+http://github.com/dylanz/ehcache/tree/master/README.txt

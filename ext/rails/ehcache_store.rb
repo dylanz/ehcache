@@ -22,7 +22,7 @@ module ActiveSupport
         @data.set(key, value, options)
         true
       rescue Ehcache::EhcacheError => e
-        logger.error("MemCacheError (#{e}): #{e.message}")
+        logger.error("EhcacheError (#{e}): #{e.message}")
         false
       end
 
@@ -30,7 +30,7 @@ module ActiveSupport
         super
         @data.delete(key)
       rescue Exception => e
-        logger.error("MemCacheError (#{e}): #{e.message}")
+        logger.error("EhcacheError (#{e}): #{e.message}")
         false
       end
 

@@ -19,6 +19,11 @@ module Ehcache
     end
     alias_method :set, :put
 
+    # another alias for put
+    def []=(key, value)
+      put(key, value)
+    end
+
     # get an element value from cache by key
     def get(key)
       element = @proxy.get(key)
@@ -26,6 +31,7 @@ module Ehcache
     rescue NativeException => e
       raise EhcacheError, e.cause
     end
+    alias_method :[], :get
 
     # get an element from cache by key
     def element(key)
@@ -43,6 +49,7 @@ module Ehcache
     rescue NativeException => e
       raise EhcacheError, e.cause
     end
+    alias_method :delete, :remove
 
     # remove all elements from the cache
     def remove_all
