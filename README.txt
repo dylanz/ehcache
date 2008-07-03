@@ -1,4 +1,4 @@
-= Ehcache for Ruby
+= Ehcache for JRuby
 
 http://github.com/dylanz/ehcache
 
