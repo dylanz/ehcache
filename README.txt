@@ -23,6 +23,12 @@ http://ehcache.sourceforge.net/
 Configuration, Code Samples and everything else, see:
 http://ehcache.sourceforge.net/EhcacheUserGuide.html
 
+Google Groups:
+http://groups.google.com/group/ehcache-jruby
+
+Tickets:
+http://dylanz.lighthouseapp.com/projects/14518-ehcache-jruby/overview
+
 
 == BASIC USAGE:
 
