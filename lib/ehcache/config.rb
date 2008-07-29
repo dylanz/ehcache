@@ -13,6 +13,13 @@ module Ehcache
   class Config
     CONFIGURATION_FILE = EHCACHE_HOME + "/config/ehcache.yml"
 
+    # rails specific configuration
+    if defined?(RAILS_ROOT)
+      if File.exists?(RAILS_ROOT + "/config/ehcache.yml")
+        CONFIGURATION_FILE = (RAILS_ROOT + "/config/ehcache.yml")
+      end
+    end
+
     class << self
       def generate(options={})
         unless File.exists?(CONFIGURATION_FILE)

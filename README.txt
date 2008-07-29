@@ -51,7 +51,9 @@ are setup to support caching, eg: config.action_controller.perform_caching = tru
 2) In your environment.rb, specify:
      - config.cache_store = :ehcache_store
 
-3) Cache stuff
+3) Start server in production mode.  Important.
+
+4) Cache stuff
 
 
 == REQUIREMENTS:

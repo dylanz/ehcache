@@ -10,6 +10,14 @@ if $*.pop == "rails"
     abort "Oops... make sure you are running this from your RAILS_ROOT"
   end
 
+  # copy default ehcache.yml into config/
+  if File.exists?("config/ehcache.yml")
+    warn "It looks like ehcache.yml already exists in config/"
+  else
+    FileUtils.cp("#{Ehcache::EHCACHE_HOME}/config/ehcache.yml", "config/")
+  end
+
+  # add ehcache store 
   if File.exists?("lib/ehcache_store.rb")
     warn "It looks like ehcache_store.rb already exists in lib/"
   else

@@ -14,7 +14,6 @@ module Ehcache
         raise EhcacheError, "Element cannot be blank"
       end
       @mutex.lock
-      value = Marshal.dump(value)
       element = Ehcache::Element.new(key, value, options)
       @proxy.put(element.proxy)
     rescue NativeException => e
@@ -23,6 +22,7 @@ module Ehcache
       @mutex.unlock
     end
     alias_method :set, :put
+    alias_method :add, :put
 
     # another alias for put
     def []=(key, value)
@@ -33,9 +33,7 @@ module Ehcache
     def get(key)
       @mutex.lock
       element = @proxy.get(key)
-      value = element ? element.get_value : nil
-      return nil if value.nil?
-      Marshal.load(value)
+      element ? element.get_value : nil
     rescue NativeException => e
       raise EhcacheError, e.cause
     ensure
