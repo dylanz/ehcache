@@ -1,0 +1,27 @@
+disk:
+  path: java.io.tmpdir
+
+peer_provider:
+  class: net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory
+  properties: peerDiscovery=manual,rmiUrls=//that_hostname:40001/cache
+  property_separator: "\,"
+
+peer_listener:
+  class: net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory
+  properties: hostName=this_hostname,port=40000
+
+default:
+  name: cache
+  max_elements_in_memory:  10000
+  time_to_live_seconds:  0
+  time_to_idle_seconds:  0
+  overflow_to_disk: true
+  eternal: false
+  disk_spool_buffer_size_mb: 30
+  disk_persistent: false
+  disk_expiry_thread_interval_seconds: 120
+  memory_store_eviction_policy: LRU
+  event_listener: { class: net.sf.ehcache.distribution.RMICacheReplicatorFactory }
+  bootstrap_loader: { class: net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory,
+                      properties: 'bootstrapAsynchronously=true,maximumChunkSizeBytes=5000000',
+                      property_separator: "\," }
