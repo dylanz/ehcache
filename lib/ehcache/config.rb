@@ -50,7 +50,6 @@ module Ehcache
         @configuration.add_disk_store(@disk)
         @configuration.add_cache_manager_peer_provider_factory(@peer_provider)
         @configuration.add_cache_manager_peer_listener_factory(@peer_listener)
-        @configuration.add_cache_manager_event_listener_factory(@event_listener)
         @configuration
       end
 
@@ -74,9 +73,16 @@ module Ehcache
           # factories, loader factories, etc.  TODO:  clean this up, and add
           # support for adding other factories in a cleaner fashion.
           if v.is_a?(Hash)
-            event_factory = Ehcache::Java::CacheConfiguration::CacheEventListenerFactoryConfiguration.new(config)
-            v.each { |k,v| event_factory.send("set_#{k.to_s}",v) }
-            config.add_cache_event_listener_factory(event_factory)
+            case k
+              when "event_listener":
+                event_factory = Ehcache::Java::CacheConfiguration::CacheEventListenerFactoryConfiguration.new(config)
+                v.each { |k,v| event_factory.send("set_#{k.to_s}",v) }
+                config.add_cache_event_listener_factory(event_factory)
+              when "bootstrap_loader":
+                bootstrap_loader = Ehcache::Java::CacheConfiguration::BootstrapCacheLoaderFactoryConfiguration.new(config)
+                v.each { |k,v| bootstrap_loader.send("set_#{k.to_s}",v) }
+                config.add_bootstrap_cache_loader_factory(bootstrap_loader)
+            end
           else
             config.send("set_#{k.to_s}",v)
           end
