@@ -1,6 +1,6 @@
 module Ehcache
   class Cache
-    PRIMARY = "primary"
+    PRIMARY = "cache"
 
     # pull cache from given manager by name
     def initialize(manager, cache_name)
