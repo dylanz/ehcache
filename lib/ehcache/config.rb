@@ -66,7 +66,7 @@ module Ehcache
       end
 
       # creates and sets up cache configurations
-      def create_cache_configuration(data)
+      def create_cache_configuration(cache_name, data)
         config = instance_variable_get("@#{cache_name}".intern)
         data.each { |k,v|
           # included hashes will be event listener factories, exception handler
@@ -104,6 +104,7 @@ module Ehcache
       def setter(factory, config)
         factory = instance_variable_get("@#{factory}".intern)
         config.each { |k,v| factory.send("set_#{k.to_s}",v) unless v.is_a?(Hash) }
+      end
     end
   end
 end
