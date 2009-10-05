@@ -2,6 +2,11 @@
 
 http://github.com/dylanz/ehcache
 
+== DISCLAIMER!
+
+This gem was created prior to the Terracotta acquisition.
+If you're using this pre or post acquisition, please drop me a quick note about it, as I'd love to hear your experience with it.
+
 
 == DESCRIPTION:
 
