@@ -4,7 +4,7 @@ module Ehcache
 
     # pull cache from given manager by name
     def initialize(manager, cache_name)
-      @mutex = Mutex.new
+      @mutex = java.lang.Object.new
       @proxy = manager.get_cache(cache_name)
     end
 
@@ -13,13 +13,12 @@ module Ehcache
       if key.nil? || key.empty?
         raise EhcacheError, "Element cannot be blank"
       end
-      @mutex.lock
-      element = Ehcache::Element.new(key, value, options)
-      @proxy.put(element.proxy)
+      @mutex.synchronized do
+        element = Ehcache::Element.new(key, value, options)
+        @proxy.put(element.proxy)
+      end
     rescue NativeException => e
       raise EhcacheError, e.cause
-    ensure
-      @mutex.unlock
     end
     alias_method :set, :put
     alias_method :add, :put
@@ -31,13 +30,12 @@ module Ehcache
 
     # get an element value from cache by key
     def get(key)
-      @mutex.lock
-      element = @proxy.get(key)
-      element ? element.get_value : nil
+      @mutex.synchronized do
+        element = @proxy.get(key)
+        element ? element.get_value : nil
+      end
     rescue NativeException => e
       raise EhcacheError, e.cause
-    ensure
-      @mutex.unlock
     end
     alias_method :[], :get
 
@@ -53,23 +51,21 @@ module Ehcache
 
     # remove an element from the cache by key
     def remove(key)
-      @mutex.lock
-      @proxy.remove(key)
+      @mutex.synchronized do
+        @proxy.remove(key)
+      end
     rescue NativeException => e
       raise EhcacheError, e.cause
-    ensure
-      @mutex.unlock
     end
     alias_method :delete, :remove
 
     # remove all elements from the cache
     def remove_all
-      @mutex.lock
-      @proxy.remove_all
+      @mutex.synchronized do
+        @proxy.remove_all
+      end
     rescue NativeException => e
       raise EhcacheError, e.cause
-    ensure
-      @mutex.unlock
     end
     alias_method :clear, :remove_all
 
