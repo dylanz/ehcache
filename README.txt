@@ -2,15 +2,9 @@
 
 http://github.com/dylanz/ehcache
 
-== DISCLAIMER!
-
-This gem was created prior to the Terracotta acquisition.
-If you're using this pre or post acquisition, please drop me a quick note about it, as I'd love to hear your experience with it.
-
-
 == DESCRIPTION:
 
-Ehcache is a simplified JRuby interface to Java's (JSR(107) compliant) Ehcache.
+Ehcache is a simplified JRuby interface to Java's (JSR-107 compliant) Ehcache.
 Simplified meaning that it should work out-of-the-box, but a lot of native
 methods haven't been interfaced yet, as they weren't needed.  Configuration
 occurs in config/ehcache.yml, and should support all the configuration
@@ -23,10 +17,10 @@ http://blog.aristotlesdog.com/2008/05/01/memcached_vs_ehcache/
 http://www.hugotroche.com/my_weblog/2008/06/ehcache-vs-memc.html
 
 For more information on Ehcache, see:
-http://ehcache.sourceforge.net/
+http://www.ehcache.org/
 
 Configuration, Code Samples and everything else, see:
-http://ehcache.sourceforge.net/EhcacheUserGuide.html
+http://ehcache.org/documentation/index.html
 
 Google Groups:
 http://groups.google.com/group/ehcache-jruby
@@ -46,29 +40,23 @@ manager.shutdown
 
 == RAILS:
 
-An EhcacheStore is available for use within Rails, so all the native
-Rails caching methods are supported.  Make sure your config/environments/*,
-are setup to support caching, eg: config.action_controller.perform_caching = true
+Rails 2 and Rails 3 integration are provided by the separate ehcache-rails2
+and ehcache-rails3 gems.  To install, choose the correct version for your
+Rails application and use JRuby's gem command to install, e.g.:
 
-1) From your RAILS_ROOT, run this command:
-     - ehcache rails  ## just copies ehcache_store.rb into lib/ at the moment
-
-2) In your environment.rb, specify:
-     - config.cache_store = :ehcache_store
-
-3) Start server in production mode.  Important.
-
-4) Cache stuff
+$ jgem install ehcache-rails3
+OR
+$ jruby -S gem install ehcache-rails3
 
 
 == REQUIREMENTS:
 
-Tested with JRuby 1.1.2.
+Tested with JRuby 1.5.0.
 
 
 == INSTALL:
 
-sudo gem install ehcache
+$ sudo jruby -S gem install ehcache
 
 
 == LICENSE:
