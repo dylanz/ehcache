@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require 'rake'
+require 'rubygems'
+require 'ehcache'
+
+# TODO:  optionparser this up once anything else is added
+if $*.pop == "rails"
+  unless File.exists?("config/boot.rb")
+    abort "Oops... make sure you are running this from your RAILS_ROOT"
+  end
+
+  # copy default ehcache.yml into config/
+  if File.exists?("config/ehcache.yml")
+    warn "It looks like ehcache.yml already exists in config/"
+  else
+    FileUtils.cp("#{Ehcache::EHCACHE_HOME}/config/ehcache.yml", "config/")
+  end
+
+  # add ehcache store 
+  if File.exists?("lib/ehcache_store.rb")
+    warn "It looks like ehcache_store.rb already exists in lib/"
+  else
+    FileUtils.cp("#{Ehcache::EHCACHE_HOME}/ext/rails/ehcache_store.rb", "lib/")
+  end
+else
+  warn "Usage: specify 'rails' as an argument to install required files"
+end
