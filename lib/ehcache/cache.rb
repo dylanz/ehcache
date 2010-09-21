@@ -4,7 +4,6 @@ module Ehcache
 
     # pull cache from given manager by name
     def initialize(manager, cache_name)
-      @mutex = java.lang.Object.new
       @proxy = manager.get_cache(cache_name)
     end
 
@@ -13,10 +12,8 @@ module Ehcache
       if key.nil? || key.empty?
         raise EhcacheError, "Element cannot be blank"
       end
-      @mutex.synchronized do
-        element = Ehcache::Element.new(key, value, options)
-        @proxy.put(element.proxy)
-      end
+      element = Ehcache::Element.new(key, value, options)
+      @proxy.put(element.proxy)
     rescue NativeException => e
       raise EhcacheError, e.cause
     end
@@ -30,10 +27,8 @@ module Ehcache
 
     # get an element value from cache by key
     def get(key)
-      @mutex.synchronized do
-        element = @proxy.get(key)
-        element ? element.get_value : nil
-      end
+      element = @proxy.get(key)
+      element ? element.get_value : nil
     rescue NativeException => e
       raise EhcacheError, e.cause
     end
@@ -51,9 +46,7 @@ module Ehcache
 
     # remove an element from the cache by key
     def remove(key)
-      @mutex.synchronized do
-        @proxy.remove(key)
-      end
+      @proxy.remove(key)
     rescue NativeException => e
       raise EhcacheError, e.cause
     end
@@ -61,9 +54,7 @@ module Ehcache
 
     # remove all elements from the cache
     def remove_all
-      @mutex.synchronized do
-        @proxy.remove_all
-      end
+      @proxy.remove_all
     rescue NativeException => e
       raise EhcacheError, e.cause
     end
