@@ -13,7 +13,7 @@ module ActiveSupport
     class EhcacheStore < Store
 
       def initialize(*args)
-        super({})
+        super(*args)
         @data = Ehcache::CacheManager.new.cache
         extend Strategy::LocalCache
       end
