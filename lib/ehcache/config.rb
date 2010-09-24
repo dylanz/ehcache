@@ -3,6 +3,12 @@ require 'yaml'
 
 module Ehcache
 
+  class MissingConfigurationException < StandardError
+    def initialize(search_dirs)
+      super("Could not find Ehcache configuration file in any of: #{search_dirs.inspect}")
+    end
+  end
+
   # default configuration and a cache named "cache"
   # manager = Ehcache::CacheManager.new
   # cache   = manager.cache
@@ -11,24 +17,36 @@ module Ehcache
   # manager = Ehcache::CacheManager.new({"cache" => {"name" => "steve"}})
   # cache   = manager.cache("steve")
   class Config
-    CONFIGURATION_FILE = EHCACHE_HOME + "/config/ehcache.yml"
+    CONFIG_FILE_NAME = 'ehcache.yml'
 
-    # rails specific configuration
-    if defined?(RAILS_ROOT)
-      if File.exists?(RAILS_ROOT + "/config/ehcache.yml")
-        CONFIGURATION_FILE = (RAILS_ROOT + "/config/ehcache.yml")
-      end
-    end
+    RAILS_CONFIG_DIR =
+        if defined?(::Rails)
+          File.join(::Rails.root.to_s, 'config')
+        elsif defined?(RAILS_ROOT)
+          File.join(RAILS_ROOT, 'config')
+        end
+
+    SEARCH_DIRS = [RAILS_CONFIG_DIR,
+                   File.join(ENV['HOME'], 'lib', 'config'),
+                   File.join(EHCACHE_HOME, 'config')].compact
 
     class << self
       def generate(options={})
-        unless File.exists?(CONFIGURATION_FILE)
-          raise CONFIGURATION_FILE + " must exist"
+        unless config_file = find_config_file
+          raise MissingConfigurationException.new(SEARCH_DIRS)
         end
-        config = ERB.new(File.open(CONFIGURATION_FILE) {|f| f.read})
+        config = ERB.new(File.open(config_file) {|f| f.read})
         config = YAML.load(config.result(binding))
         initialize_factory_proxies
         process(config, options)
+      end
+
+      private
+
+      def find_config_file
+        SEARCH_DIRS.map {|dir| File.join(dir, CONFIG_FILE_NAME)}.find { |f|
+          File.readable?(f)
+        }
       end
 
       def process(config, options)
