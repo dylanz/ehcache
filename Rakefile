@@ -18,14 +18,14 @@ Jeweler::Tasks.new do |gemspec|
   gemspec.description = "JRuby interface to the popular Java caching library Ehcache"
   gemspec.files.exclude '.gitignore'
 
-  # These files go in the ehcache-rails2 and ehcache-rails3 gems
+  # These files go in the jruby-ehcache-rails2 and jruby-ehcache-rails3 gems
   gemspec.files.exclude 'lib/ehcache_store.rb'
   gemspec.files.exclude 'lib/active_support/**/*'
 end
 
 Jeweler::Tasks.new do |gemspec|
   defaults(gemspec)
-  gemspec.name = 'ehcache-rails3'
+  gemspec.name = 'jruby-ehcache-rails3'
   gemspec.summary = 'Rails 3 cache store provider using Ehcache'
   gemspec.description = 'Rails 3 cache store provider using Ehcache'
   gemspec.files = 'lib/active_support/**/*'
@@ -35,7 +35,7 @@ end
 
 Jeweler::Tasks.new do |gemspec|
   defaults(gemspec)
-  gemspec.name = 'ehcache-rails2'
+  gemspec.name = 'jruby-ehcache-rails2'
   gemspec.summary = 'Rails 2 cache store provider using Ehcache'
   gemspec.description = 'Rails 2 cache store provider using Ehcache'
   gemspec.files = 'lib/ehcache_store.rb'
