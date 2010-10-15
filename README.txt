@@ -40,13 +40,13 @@ manager.shutdown
 
 == RAILS:
 
-Rails 2 and Rails 3 integration are provided by the separate ehcache-rails2
-and ehcache-rails3 gems.  To install, choose the correct version for your
+Rails 2 and Rails 3 integration are provided by the separate jruby-ehcache-rails2
+and jruby-ehcache-rails3 gems.  To install, choose the correct version for your
 Rails application and use JRuby's gem command to install, e.g.:
 
-$ jgem install ehcache-rails3
+$ jgem install jruby-ehcache-rails3
 OR
-$ jruby -S gem install ehcache-rails3
+$ jruby -S gem install jruby-ehcache-rails3
 
 
 == REQUIREMENTS:
@@ -56,7 +56,7 @@ Tested with JRuby 1.5.0.
 
 == INSTALL:
 
-$ sudo jruby -S gem install ehcache
+$ sudo jruby -S gem install jruby-ehcache
 
 
 == LICENSE:
