@@ -1,55 +1,45 @@
-begin
-  require 'ehcache'
-rescue LoadError => e
-  $stderr.puts "You don't have ehcache installed in your application. Please add it to your Gemfile and run bundle install"
-  raise e
-end
-#require 'digest/md5'
+require 'ehcache/rails/ehcache_rails_common'
 
 module ActiveSupport
   module Cache
+
     # A cache store implementation which stores data in Ehcache:
     # http://www.ehcache.org/
     class EhcacheStore < Store
+      include Ehcache::Rails
 
       def initialize(*args)
-        super(*args)
-        @data = Ehcache::CacheManager.new.cache
+        args = args.flatten
+        options = args.extract_options!
+        super(*options)
+        @ehcache = self.create_cache   # This comes from the Ehcache::Rails mixin.
         extend Strategy::LocalCache
       end
 
       def increment(name, amount = 1, options = nil) # :nodoc:
-        if num = @data.get(name)
-          num = num.to_i + amount
-          @data.put(name, num, options)
-          num
-        else
-          nil
-        end
+        @ehcache.compare_and_swap(name) { |current_value|
+          current_value + amount
+        }
       end
 
       def decrement(name, amount = 1, options = nil) # :nodoc:
-        if num = @data.get(name)
-          num = num.to_i - amount
-          @data.put(name, num, options)
-          num
-        else
-          nil
-        end
+        @ehcache.compare_and_swap(name) { |current_value|
+          current_value - amount
+        }
       end
 
       def clear(options = nil)
-        @data.remove_all
+        @ehcache.remove_all
       end
 
       def stats
-        @data.statistics
+        @ehcache.statistics
       end
 
       protected
       # Read an entry from the cache.
       def read_entry(key, options) # :nodoc:
-        @data.get(key)
+        @ehcache[key]
       rescue Ehcache::EhcacheError => e
         logger.error("EhcacheError (#{e}): #{e.message}")
         false
@@ -57,7 +47,7 @@ module ActiveSupport
 
       # Write an entry to the cache.
       def write_entry(key, entry, options) # :nodoc:
-        @data.set(key, entry, options)
+        @ehcache.put(key, entry, options)
         true
       rescue Ehcache::EhcacheError => e
         logger.error("EhcacheError (#{e}): #{e.message}")
@@ -66,7 +56,7 @@ module ActiveSupport
 
       # Delete an entry from the cache.
       def delete_entry(key, options) # :nodoc:
-        @data.delete(key)
+        @ehcache.remove(key)
       rescue Exception => e
         logger.error("EhcacheError (#{e}): #{e.message}")
         false

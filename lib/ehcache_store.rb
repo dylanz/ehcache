@@ -1,25 +1,25 @@
 require 'activesupport'
-require 'ehcache'
+require 'ehcache/rails/ehcache_rails_common'
 
 module ActiveSupport
   module Cache
     class EhcacheStore < Store
+      include Ehcache::Rails
+
       def initialize(options = {})
-        manager = Ehcache::CacheManager.new(options)
-        @data = manager.cache
+        super
+        @ehcache = self.create_cache   # This comes from the Ehcache::Rails mixin.
       end
 
       def read(key, options = nil)
-        super
-        @data.get(key)
+        @ehcache.get(key)
       rescue Ehcache::EhcacheError => e
         logger.error("EhcacheError (#{e}): #{e.message}")
         false
       end
 
       def write(key, value, options = nil)
-        super
-        @data.set(key, value, options)
+        @ehcache.put(key, value, options)
         true
       rescue Ehcache::EhcacheError => e
         logger.error("EhcacheError (#{e}): #{e.message}")
@@ -27,19 +27,18 @@ module ActiveSupport
       end
 
       def delete(key, options = nil)
-        super
-        @data.delete(key)
+        @ehcache.remove(key)
       rescue Exception => e
         logger.error("EhcacheError (#{e}): #{e.message}")
         false
       end
 
       def keys
-        @data.keys
+        @ehcache.keys
       end
 
       def exist?(key, options = nil)
-        @data.exist?(key)
+        @ehcache.exist?(key)
       end
 
       def delete_matched(matcher, options = nil)
@@ -48,7 +47,7 @@ module ActiveSupport
       end
 
       def clear
-        @data.clear
+        @ehcache.clear
         true
       rescue Exception => e
         logger.error("EhcacheError (#{e}): #{e.message}")
