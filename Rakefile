@@ -1,3 +1,15 @@
+require 'rake/testtask'
+require 'rake/rdoctask'
+
+task :default => [ :test ]
+
+desc "Executes the test suite"
+Rake::TestTask.new do |t|
+  t.name = :test
+  t.libs << 'lib' << 'ext' << 'test'
+  t.pattern = "test/test_*.rb"
+end
+
 begin
   require 'jeweler'
 rescue LoadError
