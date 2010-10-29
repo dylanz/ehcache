@@ -59,6 +59,7 @@ module Ehcache::Config
       end
 
       def set_attributes(object, attributes)
+        attributes ||= []
         attributes.each do |key, value|
           object.send("#{key}=", value)
         end

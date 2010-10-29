@@ -50,6 +50,7 @@ end
 # Helper method for processing initialization arguments passed to
 # CacheManager.create and CacheManager#initialize.
 def process_init_args(*args)
+  args.compact!
   if args.empty?
     # First, look relative to the file that is creating the CacheManager.
     # The expression caller[2] finds the entry in the call stack where
