@@ -1,3 +1,102 @@
+# Enhance net.sf.ehcache.config.Configuration with a more Rubyesque API, and
+# add support for using YAML for configuration.
+class Java::NetSfEhcacheConfig::Configuration
+  Factory = Java::NetSfEhcacheConfig::ConfigurationFactory
+
+  # Searches for an Ehcache configuration file and, if found, returns a
+  # Configuration object created from it.  The search algorithm looks for
+  # files named "ehcache.yml" or "ehcache.xml", first looking in the provided
+  # directories in order, and if not found there then looking in the Ruby
+  # $LOAD_PATH.
+  # Returns nil if no configuration file is found.
+  def self.find(*dirs)
+    # FIXME: search for ehcache.yml first
+    file_names = %w[ehcache.xml ehcache.yml]
+    dirs += $LOAD_PATH
+    dirs.each do |dir|
+      file_names.each do |name|
+        candidate = File.join(dir, name)
+        return create(candidate) if File.exist?(candidate)
+      end
+    end
+    nil
+  end
+
+  def self.create(*args)
+    result = nil
+    case args.size
+    when 0
+      result = Factory.parseConfiguration()
+    when 1
+      arg = args.first
+
+      if arg.is_a?(String)
+        raise ArgumentError, "Cannot read config file '#{arg}'" unless File.readable?(arg)
+        if arg =~ /\.yml$/
+          result = YamlConfig.parse_yaml_config(arg)
+        else
+          result = Factory.parseConfiguration(java.io.File.new(arg))
+        end
+      else
+        result = Factory.parseConfiguration(arg)
+      end
+    end
+
+    unless result.is_a?(self)
+      raise ArgumentError, "Could not create Configuration from: #{args.inspect}"
+    end
+    result
+  end
+end
+
+require 'yaml'
+require 'erb'
+
+module YamlConfig
+  extend self
+  include Ehcache::Config
+
+  DISK_STORE = 'disk_store'
+  PEER_PROVIDER = 'peer_provider'
+  PEER_LISTENER = 'peer_listener'
+  DEFAULT_CACHE = 'default_cache'
+
+  def parse_yaml_config(yaml_file)
+    config = ERB.new(File.read(yaml_file))
+    config = YAML.load(config.result(binding))
+    validate_config(config)
+    create_configuration(config)
+  end
+
+  private
+
+  def validate_config(config)
+    valid = config.is_a?(Hash)
+    raise Java::NetSfEhcacheConfig::InvalidConfigurationException unless valid
+  end
+
+  def create_configuration(options)
+    config = Java::NetSfEhcacheConfig.new
+    configure_disk_store(config, options)
+    configure_peer_provider(config, options)
+  end
+
+  def configure_disk_store(config, options)
+    if data = options['disk_store']
+      disk_store = DiskStoreConfiguration.new
+      set_values(disk_store, data)
+      config.add_disk_store(disk_store)
+    end
+  end
+
+  def set_values(config, data)
+    data.each do |key, value|
+      config.send("set_#{key}", value)
+    end
+  end
+end
+
+__END__
 require 'erb'
 require 'yaml'
 

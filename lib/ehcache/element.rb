@@ -1,3 +1,22 @@
+# Enhance net.sf.ehcache.Element with a more Rubyesque API.
+class Java::NetSfEhcache::Element
+  def self.create(key, value, options = {})
+    result = self.new(key, value)
+    options.each do |key, value|
+      setter = "#{key}=".to_sym
+      result.send(setter, value) if result.respond_to?(setter)
+    end
+    result
+  end
+
+  alias tti getTimeToIdle
+  alias ttl getTimeToLive
+
+  alias tti= setTimeToIdle
+  alias ttl= setTimeToLive
+end
+
+__END__
 module Ehcache
   class Element
     attr_accessor :key, :value
