@@ -1,20 +1,25 @@
-update_check: true
+name: testing
+update_check: false
 monitoring: autodetect
 dynamic_config: true
 
 disk_store:
   path: java.io.tmpdir
 
-peer_provider:
-  class: net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory
-  properties: peerDiscovery=automatic,multicastGroupAddress=230.0.0.1,multicastGroupPort=4446,timeToLive=1
-  property_separator: "\,"
+transaction_manager:
+  class: net.sf.ehcache.transaction.manager.DefaultTransactionManagerLookup
+  properties: jndiName=java:/TransactionManager
+  property_separator: ";"
 
-peer_listener:
-  class: net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory
+peer_providers:
+- class: net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory
+  properties: peerDiscovery=automatic,multicastGroupAddress=230.0.0.1,multicastGroupPort=4446,timeToLive=1
+  property_separator: ","
+
+peer_listeners:
+- class: net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory
 
 default_cache:
-  name: cache
   max_elements_in_memory:  10000
   time_to_live_seconds:  0
   time_to_idle_seconds:  0
@@ -24,3 +29,20 @@ default_cache:
   disk_persistent: false
   disk_expiry_thread_interval_seconds: 120
   memory_store_eviction_policy: LRU
+
+caches:
+  # Sample cache named sampleCache1
+- name: sampleCache1
+  max_elements_in_memory: 10000
+  max_elements_on_disk: 1000
+  eternal: false
+  time_to_idle_seconds: 360
+  time_to_live_seconds: 1000
+  overflow_to_disk: true
+
+  #Sample cache named sampleCache2. Is eternal. Is diskPersistent but does not overflow to disk
+- name: sampleCache2
+  max_elements_in_memory: 1000
+  eternal: true
+  overflow_to_disk: false
+  disk_persistent: true

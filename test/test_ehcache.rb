@@ -8,7 +8,7 @@ class TestEhcache < Test::Unit::TestCase
   end
 
   def teardown
-    @manager.shutdown
+    @manager.shutdown if @manager
   end
   
   def test_demo_usage
