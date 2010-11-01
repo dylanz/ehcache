@@ -1,14 +1,15 @@
-= Ehcache for JRuby
+= jruby-ehcache - Ehcache for JRuby
 
 http://github.com/dylanz/ehcache
 
 == DESCRIPTION:
 
-Ehcache is a simplified JRuby interface to Java's (JSR-107 compliant) Ehcache.
-Simplified meaning that it should work out-of-the-box, but a lot of native
-methods haven't been interfaced yet, as they weren't needed.  Configuration
-occurs in config/ehcache.yml, and should support all the configuration
-options available.
+jruby-ehcache is a JRuby interface to Java's (JSR-107 compliant) Ehcache.
+It provides 100% full coverage of the native Ehcache API and also provides
+some Rubyesque enhancements to make it idiomatic to Ruby developers.
+Configuration can be done with the traditional ehcache.xml file that Java
+developers use, or can be done with ehcache.yml in the easier to use YAML
+language.
 
 Some biased and non-biased Ehcache VS Memcache articles:
 http://gregluck.com/blog/archives/2007/05/comparing_memca.html
@@ -30,19 +31,21 @@ http://dylanz.lighthouseapp.com/projects/14518-ehcache-jruby/overview
 
 
 == BASIC USAGE:
-
+require 'ehcache'
 manager = CacheManager.new
 cache = manager.cache
 cache.put("key", "value", {:ttl => 120})
-cache.get("key")
+cache.get("key")  # => returns the Ehcache Element object
+cache["key"]      # => returns "value", the value of the Element
 manager.shutdown
 
 
 == RAILS:
 
-Rails 2 and Rails 3 integration are provided by the separate jruby-ehcache-rails2
-and jruby-ehcache-rails3 gems.  To install, choose the correct version for your
-Rails application and use JRuby's gem command to install, e.g.:
+Rails 2 and Rails 3 integration are provided by the separate
+jruby-ehcache-rails2 and jruby-ehcache-rails3 gems.  To install, choose the
+correct version for your Rails application and use JRuby's gem command to
+install, e.g.:
 
 $ jgem install jruby-ehcache-rails3
 OR
@@ -51,7 +54,7 @@ $ jruby -S gem install jruby-ehcache-rails3
 
 == REQUIREMENTS:
 
-Tested with JRuby 1.5.0.
+Tested with JRuby 1.5.3.
 
 
 == INSTALL:
