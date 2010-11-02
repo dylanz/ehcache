@@ -3,7 +3,7 @@ require 'ehcache/rails/ehcache_rails_common'
 module ActiveSupport
   module Cache
 
-    # A cache store implementation which stores data in Ehcache:
+    # Rails 3 cache store implementation which stores data in Ehcache:
     # http://www.ehcache.org/
     class EhcacheStore < Store
       include Ehcache::Rails
