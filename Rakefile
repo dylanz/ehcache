@@ -34,6 +34,7 @@ Jeweler::Tasks.new do |gemspec|
   gemspec.files.exclude 'lib/ehcache_store.rb'
   gemspec.files.exclude 'lib/active_support/**/*'
   gemspec.files.exclude 'lib/ehcache/rails'
+  gemspec.add_dependency 'activesupport'
 end
 
 Jeweler::Tasks.new do |gemspec|
