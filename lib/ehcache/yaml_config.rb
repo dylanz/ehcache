@@ -4,6 +4,84 @@ require 'yaml'
 require 'erb'
 
 module Ehcache::Config
+  # Support for using YAML for Ehcache configuration.
+  # YAML configuration is similar to XML configuration, but there are some
+  # changes to the names of configuration elements to make them simpler or
+  # more idiomatic to Ruby and YAML conventions.  The changes are described
+  # below.  For full documentation on the Ehcache configuration elements,
+  # see the Ehcache Cache Configuration documentation:
+  # http://ehcache.org/documentation/configuration.html
+  #
+  # The top level YAML configuration attributes and the corresponding XML
+  # elements or attributes are shown in the following table.
+  #
+  # name:: name attribute on ehcache element
+  # update_check:: updateCheck attribute on ehcache element
+  # monitoring:: monitoring attribute on ehcache element
+  # dynamic_config:: dynamicConfig attribute on ehcache element
+  # disk_store:: diskStore element
+  # transaction_manager:: transactionManagerLookup element
+  # event_listener:: cacheManagerEventListenerFactory element
+  # peer_providers (Array):: cacheManagerPeerProviderFactory elements
+  # peer_listeners (Array):: cacheManagerPeerListenerFactory elements
+  # terracotta_config:: terracottaConfig element
+  # default_cache:: defaultCache element
+  # caches (Array):: cache elements
+  #
+  # Each top level configuration attribute contains a set of key/value pairs
+  # that are equivalent to the Ehcache XML attributes, except that the
+  # attribute names are converted to use underscore_names instead of
+  # camelCaseNames.  For instance, the Ehcache XML attribute
+  # diskSpoolBufferSizeMB becomes disk_spool_buffer_size_mb in YAML.
+  #
+  # Entries in the above table that are marked as (Array) should be YAML lists
+  # to allow for multiple values.  So, for example, to configure multiple
+  # caches in your YAML configuration, use the following syntax:
+  #
+  #   caches:
+  #     - name: my_cache
+  #       time_to_idle_seconds: 360
+  #       time_to_live_seconds: 1000
+  #     - name: my_other_cache
+  #       max_elements_in_memory: 1000
+  #       eternal: true
+  #       overflow_to_disk: false
+  #       disk_persistent: true
+  #
+  # Note the use of the '-' to separate list elements.
+  #
+  # One further difference between YAML configuration and XML configuration
+  # deals with cache configuration.  The XML configuration allows for a set
+  # of XML sub elements to configure various aspects of caches (or the default
+  # cache).  In YAML, these sub elements are translated to attributes within
+  # the cache configuration (or default_cache configuration) that
+  # refer to Hashes or Arrays.  The following table shows the mapping.
+  #
+  # event_listeners (Array):: cacheEventListenerFactory sub elements
+  # extensions (Array):: cacheExtensionFactory sub elements
+  # loaders (Array):: cacheLoaderFactory sub elements
+  # decorators (Array):: cacheDecoratorFactory sub elements
+  # bootstrap_loader (Hash):: bootstrapCacheLoaderFactory sub element
+  # exception_handler (Hash):: cacheExceptionHandlerFactory sub element
+  # terracotta (Hash):: terracotta sub element
+  # cache_writer (Hash):: cacheWriter sub element
+  # copy_strategy (Hash):: copyStrategy sub element
+  #
+  # Those marked as (Array) may take a list of values, while those marked as
+  # (Hash) may take a single Hash value (set of key/value pairs).  Here is an
+  # example of a cache configuration that uses one of each style:
+  #
+  #   caches:
+  #     - name: some_cache
+  #       time_to_live_seconds: 100
+  #       event_listeners:
+  #         - class: net.sf.ehcache.distribution.RMICacheReplicatorFactory
+  #           properties: "replicateAsynchronously=false"
+  #       copy_strategy:
+  #         class: net.sf.ehcache.store.compound.SerializationCopyStrategy
+  #
+  # Note again the use of the '-' character to separate list elements in the
+  # case of Array values, which is not present for Hash values.
   module YamlConfig
 
     InvalidYamlConfiguration = Class.new(StandardError)
@@ -24,6 +102,8 @@ module Ehcache::Config
       const_set(attribute.upcase.to_sym, attribute)
     end
 
+    # Parses the given yaml_config_file and returns a corresponding
+    # Ehcache::Config::Configuration object.
     def self.parse_yaml_config(yaml_config_file)
       YamlConfigBuilder.new(yaml_config_file).build
     end
@@ -84,14 +164,22 @@ module Ehcache::Config
         end
       end
 
-      def create_cache_config_factory(cache, key, data)
+      def names_for_factory(key)
         singular = key.singularize.sub(/s$/, '')
-        factory_name = "Cache#{singular.camelize}Factory"
+        factory_name = if key == 'bootstrap_loader'
+          "BootstrapCacheLoaderFactory"
+        else
+          "Cache#{singular.camelize}Factory"
+        end
         class_name = "#{factory_name}Configuration"
+        method_name = "add#{factory_name}"
+        return [class_name, method_name]
+      end
+
+      def create_cache_config_factory(cache, key, data)
+        class_name, method_name = names_for_factory(key)
         factory_class = CacheConfiguration.const_get(class_name)
         factory = factory_class.new
-
-        method_name = "add#{factory_name}"
 
         cache.send(method_name, factory)
         set_attributes(factory, data)

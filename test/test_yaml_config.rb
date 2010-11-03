@@ -127,6 +127,20 @@ class TestConfiguration < Test::Unit::TestCase
     end
   end
 
+  must 'have valid bootstrap loader in sampleCacheWithCacheConfigurations' do
+    cache = @config.getCacheConfigurations['sampleCacheWithCacheConfigurations']
+    assert_not_nil(cache.getBootstrapCacheLoaderFactoryConfiguration)
+    expected = {
+      :getFullyQualifiedClassPath => "net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory",
+      :getProperties => "bootstrapAsynchronously=true, maximumChunkSizeBytes=5000000",
+      :getPropertySeparator => ","
+    }
+    bootstrap_loader = cache.getBootstrapCacheLoaderFactoryConfiguration
+    expected.each do |key, value|
+      assert_equal(value, bootstrap_loader.send(key))
+    end
+  end
+
   private
 
   def assert_factory_configuration_equals(factory, values)

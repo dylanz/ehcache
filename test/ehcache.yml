@@ -53,6 +53,10 @@ caches:
   time_to_idle_seconds: 100
   time_to_live_seconds: 100
   overflow_to_disk: false
+  bootstrap_loader:
+    class: net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory
+    properties: "bootstrapAsynchronously=true, maximumChunkSizeBytes=5000000"
+    property_separator: ","
   event_listeners:
     - class: net.sf.ehcache.distribution.RMICacheReplicatorFactory
       properties: "replicateAsynchronously=false, replicatePuts=false, replicatePutsViaCopy=false, replicateUpdates=true, replicateUpdatesViaCopy=true, replicateRemovals=false"
