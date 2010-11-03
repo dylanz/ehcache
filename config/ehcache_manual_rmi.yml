@@ -1,16 +1,16 @@
-disk:
+disk_store:
   path: java.io.tmpdir
 
-peer_provider:
-  class: net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory
+peer_providers:
+- class: net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory
   properties: peerDiscovery=manual,rmiUrls=//that_hostname:40001/cache
   property_separator: "\,"
 
-peer_listener:
-  class: net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory
+peer_listeners:
+- class: net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory
   properties: hostName=this_hostname,port=40000
 
-default:
+default_cache:
   name: cache
   max_elements_in_memory:  10000
   time_to_live_seconds:  0

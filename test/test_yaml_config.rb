@@ -66,7 +66,7 @@ class TestConfiguration < Test::Unit::TestCase
 
   must 'have two cache configurations' do
     caches = @config.getCacheConfigurations
-    assert_equal(2, caches.size)
+    assert_equal(3, caches.size)
     assert(caches.containsKey("sampleCache1"), "Should have sampleCache1")
     assert(caches.containsKey("sampleCache2"), "Should have sampleCache2")
   end
@@ -96,6 +96,34 @@ class TestConfiguration < Test::Unit::TestCase
     }
     expected.each do |key, value|
       assert_equal(value, cache.send(key))
+    end
+  end
+
+  must 'have valid sampleCacheWithCacheConfigurations configuration' do
+    cache = @config.getCacheConfigurations['sampleCacheWithCacheConfigurations']
+    expected = {
+      :getMaxElementsInMemory => 10,
+      :isEternal => false,
+      :getTimeToIdleSeconds => 100,
+      :getTimeToLiveSeconds => 100,
+      :isOverflowToDisk => false
+    }
+    expected.each do |key, value|
+      assert_equal(value, cache.send(key))
+    end
+  end
+
+  must 'have 2 event listeners in sampleCacheWithCacheConfigurations' do
+    cache = @config.getCacheConfigurations['sampleCacheWithCacheConfigurations']
+    assert_equal(2, cache.getCacheEventListenerConfigurations.size)
+    expected = {
+      :getFullyQualifiedClassPath => 'net.sf.ehcache.distribution.RMICacheReplicatorFactory',
+      :getProperties => "replicateAsynchronously=false, replicatePuts=false, replicatePutsViaCopy=false, replicateUpdates=true, replicateUpdatesViaCopy=true, replicateRemovals=false"
+    }
+    cache.getCacheEventListenerConfigurations.each do |event_listener|
+      expected.each do |key, value|
+        assert_equal(value, event_listener.send(key))
+      end
     end
   end
 

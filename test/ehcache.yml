@@ -46,3 +46,18 @@ caches:
   eternal: true
   overflow_to_disk: false
   disk_persistent: true
+
+- name: sampleCacheWithCacheConfigurations
+  max_elements_in_memory: 10
+  eternal: false
+  time_to_idle_seconds: 100
+  time_to_live_seconds: 100
+  overflow_to_disk: false
+  event_listeners:
+    - class: net.sf.ehcache.distribution.RMICacheReplicatorFactory
+      properties: "replicateAsynchronously=false, replicatePuts=false, replicatePutsViaCopy=false, replicateUpdates=true, replicateUpdatesViaCopy=true, replicateRemovals=false"
+    - class: net.sf.ehcache.distribution.RMICacheReplicatorFactory
+      properties: "replicateAsynchronously=false, replicatePuts=false, replicatePutsViaCopy=false, replicateUpdates=true, replicateUpdatesViaCopy=true, replicateRemovals=false"
+#  extensions:
+#    - class: com.example.FileWatchingCacheRefresherExtensionFactory
+#      properties: "refreshIntervalMillis=18000, loaderTimeout=3000, flushPeriod=whatever, someOtherProperty=someValue"

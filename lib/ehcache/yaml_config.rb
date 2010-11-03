@@ -5,6 +5,9 @@ require 'erb'
 
 module Ehcache::Config
   module YamlConfig
+
+    InvalidYamlConfiguration = Class.new(StandardError)
+
     # Not sure why, but "include Java::NetSfEhcacheConfig" does not work,
     # so define local constants referring to the Ehcache classes
     Configuration = Java::NetSfEhcacheConfig::Configuration
@@ -12,12 +15,12 @@ module Ehcache::Config
     DiskStoreConfiguration = Java::NetSfEhcacheConfig::DiskStoreConfiguration
     FactoryConfiguration = Java::NetSfEhcacheConfig::FactoryConfiguration
 
-    TOP_LEVEL_ATTRIBUTES = %w[
-        name update_check monitoring dynamic_config disk_store
-        transaction_manager event_listener peer_providers peer_listeners
-        terracotta_config default_cache caches
-    ]
-    TOP_LEVEL_ATTRIBUTES.each do |attribute|
+    %w[name update_check monitoring dynamic_config
+       disk_store transaction_manager event_listener
+       peer_providers peer_listeners
+       terracotta_config default_cache caches
+       event_listeners extensions loaders decorators
+    ].each do |attribute|
       const_set(attribute.upcase.to_sym, attribute)
     end
 
@@ -32,6 +35,7 @@ module Ehcache::Config
       def initialize(yaml_file)
         @yaml_file = yaml_file
         @data = YAML.load(ERB.new(File.read(yaml_file)).result(binding))
+        raise InvalidYamlConfiguration unless valid?(@data)
       end
 
       def build
@@ -51,6 +55,10 @@ module Ehcache::Config
 
       private
 
+      def valid?(data)
+        data.is_a?(Hash)
+      end
+
       def set_if_present(key)
         if @data.has_key?(key)
           setter = "#{key}=".to_sym
@@ -61,62 +69,83 @@ module Ehcache::Config
       def set_attributes(object, attributes)
         attributes ||= []
         attributes.each do |key, value|
-          object.send("#{key}=", value)
+          if value.is_a?(Hash) || value.is_a?(Array)
+            create_cache_config_factories(object, key, value)
+          else
+            object.send("#{key}=", value)
+          end
         end
         object
       end
 
+      def create_cache_config_factories(cache, key, value)
+        [value].flatten.each do |data|
+          create_cache_config_factory(cache, key, data)
+        end
+      end
+
+      def create_cache_config_factory(cache, key, data)
+        singular = key.singularize.sub(/s$/, '')
+        factory_name = "Cache#{singular.camelize}Factory"
+        class_name = "#{factory_name}Configuration"
+        factory_class = CacheConfiguration.const_get(class_name)
+        factory = factory_class.new
+
+        method_name = "add#{factory_name}"
+
+        cache.send(method_name, factory)
+        set_attributes(factory, data)
+      end
+
+      def apply_config(key, config_class)
+        if @data[key]
+          [@data[key]].flatten.each do |data|
+            config = config_class.new
+            set_attributes(config, data)
+            yield config
+          end
+        end
+      end
+
       def set_disk_store
-        disk_store = DiskStoreConfiguration.new
-        set_attributes(disk_store, @data[DISK_STORE])
-        @config.add_disk_store(disk_store)
+        apply_config(DISK_STORE, DiskStoreConfiguration) do |disk_store|
+          @config.add_disk_store(disk_store)
+        end
       end
 
       def set_transaction_manager
-        if @data[TRANSACTION_MANAGER]
-          tx_mgr = create_factory_configuration(@data[TRANSACTION_MANAGER])
-          @config.transactionManagerLookup(tx_mgr)
+        apply_config(TRANSACTION_MANAGER, FactoryConfiguration) do |tx_mgr|
+          @config.add_transaction_manager_lookup(tx_mgr)
         end
       end
 
       def set_event_listener
-        if @data[EVENT_LISTENER]
-          event_listener = create_factory_configuration(@data[EVENT_LISTENER])
+        apply_config(EVENT_LISTENER, FactoryConfiguration) do |event_listener|
           @config.addCacheManagerEventListenerFactory(event_listener)
         end
       end
 
       def add_peer_providers
-        if @data[PEER_PROVIDERS]
-          @data[PEER_PROVIDERS].each do |data|
-            peer_provider = create_factory_configuration(data)
-            @config.addCacheManagerPeerProviderFactory(peer_provider)
-          end
+        apply_config(PEER_PROVIDERS, FactoryConfiguration) do |peer_provider|
+          @config.addCacheManagerPeerProviderFactory(peer_provider)
         end
       end
 
       def add_peer_listeners
-        if @data[PEER_LISTENERS]
-          @data[PEER_LISTENERS].each do |data|
-            peer_listener = create_factory_configuration(data)
-            @config.addCacheManagerPeerListenerFactory(peer_listener)
-          end
+        apply_config(PEER_LISTENERS, FactoryConfiguration) do |peer_listener|
+          @config.addCacheManagerPeerListenerFactory(peer_listener)
         end
       end
 
       def set_default_cache
-        cache_config = CacheConfiguration.new
-        set_attributes(cache_config, @data[DEFAULT_CACHE])
-        @config.default_cache_configuration = cache_config
+        apply_config(DEFAULT_CACHE, CacheConfiguration) do |cache_config|
+          @config.default_cache_configuration = cache_config
+        end
       end
 
       def add_caches
-        if @data[CACHES]
-          @data[CACHES].each do |data|
-            cache_config = CacheConfiguration.new
-            set_attributes(cache_config, data)
-            @config.addCache(cache_config)
-          end
+        apply_config(CACHES, CacheConfiguration) do |cache_config|
+          @config.add_cache(cache_config)
         end
       end
 
