@@ -5,6 +5,9 @@ require 'erb'
 
 module Ehcache::Config
   # Support for using YAML for Ehcache configuration.
+  #
+  # <strong>DEPRECATED:</strong> Please use ehcache.xml instead.
+  #
   # YAML configuration is similar to XML configuration, but there are some
   # changes to the names of configuration elements to make them simpler or
   # more idiomatic to Ruby and YAML conventions.  The changes are described
@@ -105,6 +108,7 @@ module Ehcache::Config
     # Parses the given yaml_config_file and returns a corresponding
     # Ehcache::Config::Configuration object.
     def self.parse_yaml_config(yaml_config_file)
+      Ehcache::LOG.warn("YAML configuration is deprecated.  Please use ehcache.xml instead.")
       YamlConfigBuilder.new(yaml_config_file).build
     end
 
