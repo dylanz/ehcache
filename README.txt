@@ -62,7 +62,8 @@ $ sudo jruby -S gem install jruby-ehcache
 
 
 == LICENSE:
-Copyright (c) 2008 Dylan Stamat <dstamat@elctech.com>
+Copyright (c) 2008 - 2010 Dylan Stamat <dstamat@elctech.com> and
+                          Jason Voegele <jason@jvoegele.com>
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
