@@ -7,9 +7,8 @@ http://github.com/dylanz/ehcache
 jruby-ehcache is a JRuby interface to Java's (JSR-107 compliant) Ehcache.
 It provides 100% full coverage of the native Ehcache API and also provides
 some Rubyesque enhancements to make it idiomatic to Ruby developers.
-Configuration can be done with the traditional ehcache.xml file that Java
-developers use, or can be done with ehcache.yml in the easier to use YAML
-language.
+Configuration is done with the traditional ehcache.xml file that Java
+developers use.
 
 Some biased and non-biased Ehcache VS Memcache articles:
 http://gregluck.com/blog/archives/2007/05/comparing_memca.html
