@@ -20,14 +20,24 @@ module Ehcache
 
     DEFAULT_RAILS_CACHE_NAME = 'rails_cache'
 
-    def create_cache_manager(*args)
-      config = Ehcache::Config::Configuration.find(RAILS_CONFIG_DIR)
+    attr_reader :cache_manager
+
+    def create_cache_manager(options)
+      config = nil
+      if options[:ehcache_config]
+        Dir.chdir(RAILS_CONFIG_DIR) do
+          config = File.expand_path(options[:ehcache_config])
+        end
+      else
+        config = Ehcache::Config::Configuration.find(RAILS_CONFIG_DIR)
+      end
       @cache_manager = Ehcache::CacheManager.create(config)
     end
 
-    def create_cache(name = DEFAULT_RAILS_CACHE_NAME)
-      create_cache_manager if @cache_manager.nil?
-      @cache = @cache_manager.cache(name)
+    def create_cache(options)
+      create_cache_manager(options) if @cache_manager.nil?
+
+      @cache = @cache_manager.cache(options[:cache_name] || DEFAULT_RAILS_CACHE_NAME)
     end
 
     at_exit do

@@ -11,8 +11,9 @@ module ActiveSupport
       def initialize(*args)
         args = args.flatten
         options = args.extract_options!
-        super(*options)
-        @ehcache = self.create_cache   # This comes from the Ehcache::Rails mixin.
+        super(options)
+        self.create_cache_manager(options)
+        @ehcache = self.create_cache(options)   # This comes from the Ehcache::Rails mixin.
         extend Strategy::LocalCache
       end
 
