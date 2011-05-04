@@ -30,7 +30,12 @@ class Java::NetSfEhcache::Cache
     else
       raise ArgumentError, "Must be Element object or key and value arguments"
     end
-    ehcache_put(element)
+
+    if options[:unless_exist]
+      put_if_absent(element)
+    else
+      ehcache_put(element)
+    end
   end
 
   alias []= put
