@@ -16,7 +16,9 @@ class Java::NetSfEhcache::Element
   alias ttl= setTimeToLive
   
   alias expires_in getTimeToLive
-  def expires_in(seconds)
+  def expires_in=(seconds)
     setTimeToLive(seconds.to_i)
   end
+  alias expiresIn expires_in
+  alias expiresIn= expires_in=
 end

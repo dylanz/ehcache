@@ -31,7 +31,8 @@ class Java::NetSfEhcache::Cache
       raise ArgumentError, "Must be Element object or key and value arguments"
     end
 
-    if options[:unless_exist]
+    if options[:unless_exist] || options[:unlessExist] ||
+       options[:if_absent]    ||options[:ifAbsent]
       put_if_absent(element)
     else
       ehcache_put(element)
