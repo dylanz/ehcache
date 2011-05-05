@@ -44,7 +44,7 @@ Jeweler::Tasks.new do |gemspec|
   gemspec.description = 'Rails 3 cache store provider using Ehcache'
   gemspec.files = FileList['lib/active_support/**/*', 'lib/ehcache/rails/**/*']
   gemspec.test_files = []
-  gemspec.add_dependency 'jruby-ehcache', ">=1.1.0"
+  gemspec.add_dependency 'jruby-ehcache', ">=1.1.1"
 end
 
 Jeweler::Tasks.new do |gemspec|
@@ -54,7 +54,7 @@ Jeweler::Tasks.new do |gemspec|
   gemspec.description = 'Rails 2 cache store provider using Ehcache'
   gemspec.files = FileList['lib/active_support/**/*', 'lib/ehcache/rails/**/*']
   gemspec.test_files = []
-  gemspec.add_dependency 'jruby-ehcache', ">=1.1.0"
+  gemspec.add_dependency 'jruby-ehcache', ">=1.1.1"
 end
 
 Jeweler::GemcutterTasks.new
