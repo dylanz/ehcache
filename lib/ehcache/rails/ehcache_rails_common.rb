@@ -11,12 +11,7 @@ module Ehcache
   # implementations.
   module Rails
 
-    RAILS_CONFIG_DIR =
-        if defined?(::Rails)
-          File.join(::Rails.root.to_s, 'config')
-        elsif defined?(RAILS_ROOT)
-          File.join(RAILS_ROOT, 'config')
-        end
+    RAILS_CONFIG_DIR = File.join(RAILS_ROOT, 'config')
 
     DEFAULT_RAILS_CACHE_NAME = 'rails_cache'
 
