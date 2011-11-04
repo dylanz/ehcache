@@ -9,18 +9,18 @@ module ActiveSupport
       include Ehcache::Rails
 
       def initialize(options = {})
-        super
+        super() # Rails 2.3.x Store doesn't take any arguments to initialize
         @ehcache = self.create_cache   # This comes from the Ehcache::Rails mixin.
       end
 
       def read(key, options = nil)
-        @ehcache.get(key)
+        @ehcache[key]
       rescue Ehcache::EhcacheError => e
         logger.error("EhcacheError (#{e}): #{e.message}")
         false
       end
 
-      def write(key, value, options = nil)
+      def write(key, value, options = {})
         @ehcache.put(key, value, options)
         true
       rescue Ehcache::EhcacheError => e

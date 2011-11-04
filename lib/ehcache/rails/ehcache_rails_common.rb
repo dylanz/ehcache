@@ -10,14 +10,14 @@ module Ehcache
   # Mixin module providing facilities for the Rails 2 and Rails 3 Cache::Store
   # implementations.
   module Rails
-
-    RAILS_CONFIG_DIR = File.join(RAILS_ROOT, 'config')
+    root = defined?(::Rails.root) ? ::Rails.root : RAILS_ROOT
+    RAILS_CONFIG_DIR = File.join(root, 'config')
 
     DEFAULT_RAILS_CACHE_NAME = 'rails_cache'
 
     attr_reader :cache_manager
 
-    def create_cache_manager(options)
+    def create_cache_manager(options = {})
       config = nil
       if options[:ehcache_config]
         Dir.chdir(RAILS_CONFIG_DIR) do
@@ -29,7 +29,7 @@ module Ehcache
       @cache_manager = Ehcache::CacheManager.create(config)
     end
 
-    def create_cache(options)
+    def create_cache(options = {})
       create_cache_manager(options) if @cache_manager.nil?
 
       @cache = @cache_manager.cache(options[:cache_name] || DEFAULT_RAILS_CACHE_NAME)
