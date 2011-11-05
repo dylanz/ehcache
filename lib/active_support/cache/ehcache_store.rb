@@ -1,19 +1,18 @@
-require 'ehcache/rails/ehcache_rails_common'
+require 'ehcache/active_support_store'
+
+# Rails 3 cache store implementation which stores data in Ehcache:
+# http://www.ehcache.org/
 
 module ActiveSupport
   module Cache
-
-    # Rails 3 cache store implementation which stores data in Ehcache:
-    # http://www.ehcache.org/
-    class EhcacheStore < Store
-      include Ehcache::Rails
+    class EhcacheStore < Ehcache::ActiveSupportStore
 
       def initialize(*args)
         args = args.flatten
         options = args.extract_options!
         super(options)
         self.create_cache_manager(options)
-        @ehcache = self.create_cache(options)   # This comes from the Ehcache::Rails mixin.
+        @ehcache = self.create_cache(options)
         extend Strategy::LocalCache
       end
 

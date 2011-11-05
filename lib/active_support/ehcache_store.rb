@@ -1,16 +1,15 @@
-require 'activesupport'
-require 'ehcache/rails/ehcache_rails_common'
+require 'ehcache/active_support_store'
+
+# Rails 2 cache store implementation which stores data in Ehcache:
+# http://www.ehcache.org/
 
 module ActiveSupport
   module Cache
-    # Rails 2 cache store implementation which stores data in Ehcache:
-    # http://www.ehcache.org/
-    class EhcacheStore < Store
-      include Ehcache::Rails
+    class EhcacheStore < Ehcache::ActiveSupportStore
 
       def initialize(options = {})
         super() # Rails 2.3.x Store doesn't take any arguments to initialize
-        @ehcache = self.create_cache   # This comes from the Ehcache::Rails mixin.
+        @ehcache = self.create_cache
       end
 
       def read(key, options = nil)
