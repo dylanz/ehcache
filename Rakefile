@@ -31,9 +31,8 @@ Jeweler::Tasks.new do |gemspec|
   gemspec.files.exclude '.gitignore'
 
   # These files go in the jruby-ehcache-rails2 and jruby-ehcache-rails3 gems
-  gemspec.files.exclude 'lib/ehcache_store.rb'
   gemspec.files.exclude 'lib/active_support/**/*'
-  gemspec.files.exclude 'lib/ehcache/rails'
+  gemspec.files.exclude 'lib/ehcache/active_support_store.rb'
   gemspec.add_dependency 'activesupport'
 end
 
@@ -42,7 +41,7 @@ Jeweler::Tasks.new do |gemspec|
   gemspec.name = 'jruby-ehcache-rails3'
   gemspec.summary = 'Rails 3 cache store provider using Ehcache'
   gemspec.description = 'Rails 3 cache store provider using Ehcache'
-  gemspec.files = FileList['lib/active_support/**/*', 'lib/ehcache/rails/**/*']
+  gemspec.files = FileList['lib/active_support/**/*', 'lib/ehcache/active_support_store.rb']
   gemspec.test_files = []
   gemspec.add_dependency 'jruby-ehcache', ">=1.1.2"
 end
@@ -52,7 +51,7 @@ Jeweler::Tasks.new do |gemspec|
   gemspec.name = 'jruby-ehcache-rails2'
   gemspec.summary = 'Rails 2 cache store provider using Ehcache'
   gemspec.description = 'Rails 2 cache store provider using Ehcache'
-  gemspec.files = FileList['lib/active_support/**/*', 'lib/ehcache/rails/**/*']
+  gemspec.files = FileList['lib/active_support/**/*', 'lib/ehcache/active_support_store.rb']
   gemspec.test_files = []
   gemspec.add_dependency 'jruby-ehcache', ">=1.1.2"
 end
