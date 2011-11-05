@@ -31,9 +31,8 @@ Jeweler::Tasks.new do |gemspec|
   gemspec.files.exclude '.gitignore'
 
   # These files go in the jruby-ehcache-rails2 and jruby-ehcache-rails3 gems
-  gemspec.files.exclude 'lib/ehcache_store.rb'
   gemspec.files.exclude 'lib/active_support/**/*'
-  gemspec.files.exclude 'lib/ehcache/rails'
+  gemspec.files.exclude 'lib/ehcache/active_support_store.rb'
   gemspec.add_dependency 'activesupport'
 end
 
