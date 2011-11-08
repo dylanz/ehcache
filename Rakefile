@@ -34,6 +34,9 @@ Jeweler::Tasks.new do |gemspec|
   gemspec.files.exclude 'lib/active_support/**/*'
   gemspec.files.exclude 'lib/ehcache/active_support_store.rb'
   gemspec.add_dependency 'activesupport'
+  gemspec.add_dependency 'i18n' # activesupport 'requires' this but not in a bundler friendly way
+  gemspec.add_development_dependency 'rake'
+  gemspec.add_development_dependency 'jeweler'
 end
 
 Jeweler::Tasks.new do |gemspec|
