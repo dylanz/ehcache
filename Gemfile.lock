@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    jruby-ehcache (1.2.0)
+    jruby-ehcache (1.2.1)
       activesupport
       i18n
       jruby-ehcache
