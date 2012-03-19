@@ -45,3 +45,14 @@ module Ehcache
 
   end
 end
+
+if defined?(Rails)
+  Ehcache::ActiveSupportStore.default_cache_name = 'rails_cache'
+
+  case Rails::VERSION::MAJOR
+  when 2
+    Ehcache::ActiveSupportStore.config_directory = File.expand_path(File.join(RAILS_ROOT, 'config'))
+  when 3
+    Ehcache::ActiveSupportStore.config_directory = File.expand_path(File.join(::Rails.root, 'config'))
+  end
+end
