@@ -9,6 +9,18 @@ class Java::NetSfEhcache::Element
     result
   end
 
+  alias element_value value
+
+  # Wrap the Element#value method to unmarshal Ruby objects if necessary.
+  def value
+    val = element_value
+    if val.kind_of?(Java::NetSfEhcache::MarshaledRubyObject)
+      Marshal.load(String.from_java_bytes(val.bytes))
+    else
+      val
+    end
+  end
+
   alias tti getTimeToIdle
   alias ttl getTimeToLive
 

@@ -10,6 +10,13 @@ class Java::NetSfEhcache::Cache
       yield self.get(key)
     end
   end
+
+  # Does this cache require marshalling of Ruby objects?
+  def marshal?
+    config = self.cache_configuration
+    config.overflow_to_disk? || config.overflow_to_off_heap? || config.terracotta_clustered?
+  end
+
   # Gets an element value from the cache.  Unlike the #get method, this method
   # returns the element value, not the Element object.
   def [](key)
@@ -26,7 +33,10 @@ class Java::NetSfEhcache::Cache
     if args.size == 1 && args.first.kind_of?(Ehcache::Element)
       element = args.first
     elsif args.size == 2
-      element = Ehcache::Element.create(args[0], args[1], options)
+      if marshal?
+        value = Java::NetSfEhcache::MarshaledRubyObject.new(Marshal.dump(args[1]).to_java_bytes)
+      end
+      element = Ehcache::Element.create(args[0], value, options)
     else
       raise ArgumentError, "Must be Element object or key and value arguments"
     end
