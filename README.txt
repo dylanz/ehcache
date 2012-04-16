@@ -51,6 +51,15 @@ OR
 $ jruby -S gem install jruby-ehcache-rails3
 
 
+== GEMFILE:
+
+Add the gem as you normally would in your Gemfile, making sure to require
+'ehcache' explicitly.  Here is an example of adding the rails3 gem to a Gemfile.
+
+gem 'jruby-ehcache-rails3', :require => 'ehcache'
+
+
+
 == REQUIREMENTS:
 
 Tested with JRuby 1.5.3.
