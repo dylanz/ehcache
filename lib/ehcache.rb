@@ -14,6 +14,7 @@ module Ehcache
   class EhcacheError < RuntimeError; end
 end
 
+require 'ehcache/extensions'
 require 'ehcache/java'
 require 'ehcache/config'
 require 'ehcache/cache'
