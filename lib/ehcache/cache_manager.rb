@@ -53,9 +53,9 @@ def process_init_args(*args)
   args.compact!
   if args.empty?
     # First, look relative to the file that is creating the CacheManager.
-    # The expression caller[2] finds the entry in the call stack where
+    # The expression caller[1] finds the entry in the call stack where
     # CacheManager.new or CacheManager.create was called.
-    creator = /^(.+?):\d/.match(caller[2])[1]
+    creator = /^\s*(.+?):\d/.match(caller[1])[1]
     if ehcache_config = Java::NetSfEhcacheConfig::Configuration.find(File.dirname(creator))
       yield(ehcache_config)
     else
