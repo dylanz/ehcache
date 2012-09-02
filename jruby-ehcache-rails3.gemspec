@@ -6,7 +6,6 @@ Gem::Specification.new do |s|
   s.name = %q{jruby-ehcache-rails3}
   s.version = Ehcache::VERSION
   s.authors = [%q{Dylan Stamat}, %q{Jason Voegele}]
-  s.date = %q{2012-03-14}
   s.description = %q{The Ehcache cache store provider for Rails 3}
   s.email = [%q{dstamat@elctech.com}, %q{jvoegele@terracotta.org}]
   s.extra_rdoc_files = [ "README.txt" ]

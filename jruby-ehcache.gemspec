@@ -6,7 +6,6 @@ Gem::Specification.new do |s|
   s.name = %q{jruby-ehcache}
   s.version = Ehcache::VERSION
   s.authors = [%q{Dylan Stamat}, %q{Jason Voegele}]
-  s.date = %q{2012-03-14}
   s.description = %q{JRuby interface to the popular Java caching library Ehcache}
   s.email = [%q{dstamat@elctech.com}, %q{jvoegele@terracotta.org}]
   s.extra_rdoc_files = [ "README.txt" ]
