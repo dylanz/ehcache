@@ -35,6 +35,8 @@ class Java::NetSfEhcache::Cache
     elsif args.size == 2
       if marshal?
         value = Java::NetSfEhcache::MarshaledRubyObject.new(Marshal.dump(args[1]).to_java_bytes)
+      else
+        value = args[1]
       end
       element = Ehcache::Element.create(args[0], value, options)
     else
